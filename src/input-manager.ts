@@ -26,9 +26,12 @@ export class InputManager {
             () => EventManager.emit(Events.INPUT_COMMAND, Command.Rotate)));
         this.sprites.push(this.createSprite(new Point(dimension.x / 2, 5 * dimension.y / 4),
             () => EventManager.emit(Events.INPUT_COMMAND, Command.Down)));
+
+        EventManager.on(Events.UPDATE, delta => this.update(delta));
+        EventManager.on(Events.GAME_OVER, () => this.destroy());
     }
 
-    public update(delta: number) {
+    private update(delta: number) {
         this.updateTimeCounterMs += delta;
         if (this.updateTimeCounterMs > this.millisecondsPerUpdate) {
             this.updateTimeCounterMs %= this.millisecondsPerUpdate;
@@ -47,7 +50,7 @@ export class InputManager {
         ];
     }
 
-    public destroy() {
+    private destroy() {
         this.sprites
             .forEach(sprite => sprite.destroy());
     }

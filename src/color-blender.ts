@@ -1,4 +1,11 @@
+import {EventManager} from './event-manager/event-manager';
+
 export class ColorBlender {
+
+    public constructor() {
+        EventManager.on
+    }
+
     public generateColor(): string {
         const r = ColorBlender.generateHexaNumber();
         const g = ColorBlender.generateHexaNumber();

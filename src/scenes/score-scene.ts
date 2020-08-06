@@ -26,7 +26,7 @@ export class ScoreScene extends Phaser.Scene {
 
         console.log(this.score);
         const scoreText = this.add.bitmapText(this.game.renderer.width * 0.15, this.game.renderer.height * 0.65,
-            'scoreFont', `${this.score}`, 40, 0);
+            'scoreFont', `${this.score}s`, 40, 0);
         scoreText.setTintFill(0xb6b600);
         scoreText.setScale(titleScaleRatio, titleScaleRatio);
     }

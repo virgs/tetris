@@ -6,62 +6,60 @@ import {Events} from '../event-manager/events';
 import {EventManager} from '../event-manager/event-manager';
 import Point = Phaser.Geom.Point;
 
-export class AliveBlock {
+export class AliveBlockHandler {
     private scene: Phaser.Scene;
     private stuckCells: Point[];
     private position: Phaser.Geom.Point;
     private sprites: Phaser.GameObjects.Sprite[];
     private cells: Phaser.Geom.Point[];
     private nextCommand: Command[] = [];
-    private alive: boolean;
     private readonly color: string;
 
-    public constructor(options: { cells: Point[], scene: Phaser.Scene }) {
+    public constructor(options: { scene: Phaser.Scene }) {
         this.color = new ColorBlender().generateColor();
-        this.alive = true;
         this.scene = options.scene;
-        this.cells = [...options.cells];
         this.stuckCells = [];
+        this.cells = [];
         this.sprites = [];
         this.nextCommand = [];
         this.position = new Point(dimension.x / 2 - 1, -5);
 
+        EventManager.on(Events.UPDATE, () => this.update());
+        EventManager.on(Events.CREATE_BLOCK, (event: { cells: Point[], stuckCells: Point[] }) => {
+            this.nextCommand = [];
+            this.position = new Point(dimension.x / 2 - 1, -5);
+            this.cells = event.cells;
+            this.stuckCells = event.stuckCells;
+        });
         EventManager.on(Events.INPUT_COMMAND, command => this.nextCommand.push(command));
-        EventManager.on(Events.FULL_STUCK_CELLS_LIST, event => this.stuckCells = event.stuckCells);
-        EventManager.emit(Events.BLOCK_CREATED);
+        EventManager.on(Events.GO_DOWN_ONE_LEVEL, () => this.goDownOneLevel());
     }
 
-    public goDownOneLevel() {
-        if (this.alive) {
-            const nextPosition: Point = new Point(this.position.x, this.position.y + 1);
-            if (!this.detectCollision(nextPosition, this.cells)) {
-                this.position = nextPosition;
-                this.renderSprites();
-            } else {
-                this.alive = false;
-                this.sprites.forEach(sprite => sprite.destroy());
-                this.sprites = [];
-
-                EventManager.emit(Events.BLOCK_DIED, {
-                    block: this,
-                    stuckCells: this.cells
-                        .map(cell => new Point(this.position.x + cell.x, this.position.y + cell.y))
-                });
-            }
+    private goDownOneLevel() {
+        const nextPosition: Point = new Point(this.position.x, this.position.y + 1);
+        if (!this.detectCollision(nextPosition, this.cells)) {
+            this.position = nextPosition;
+            this.renderSprites();
+        } else {
+            this.sprites.forEach(sprite => sprite.destroy());
+            this.sprites = [];
+            EventManager.emit(Events.BLOCK_DIED, {
+                block: this,
+                stuckCells: this.cells
+                    .map(cell => new Point(this.position.x + cell.x, this.position.y + cell.y))
+            });
         }
     }
 
-    public update(): void {
-        if (this.alive) {
-            if (this.nextCommand.includes(Command.Rotate)) {
-                this.nextCommand = [Command.Rotate,
-                    ...this.nextCommand
-                        .filter(command => command !== Command.Rotate)];
-            }
-            while (this.nextCommand.length > 0) {
-                this.position = this.calculateNextPosition(this.nextCommand.shift());
-                this.renderSprites();
-            }
+    private update(): void {
+        if (this.nextCommand.includes(Command.Rotate)) {
+            this.nextCommand = [Command.Rotate,
+                ...this.nextCommand
+                    .filter(command => command !== Command.Rotate)];
+        }
+        while (this.nextCommand.length > 0) {
+            this.position = this.calculateNextPosition(this.nextCommand.shift());
+            this.renderSprites();
         }
     }
 
@@ -101,7 +99,6 @@ export class AliveBlock {
     private detectCollision(nextPosition: Phaser.Geom.Point, nextCellsShape: Phaser.Geom.Point[]): boolean {
         const nextCellsPosition = nextCellsShape
             .map(cell => new Point(cell.x + nextPosition.x, cell.y + nextPosition.y));
-        console.log(this.stuckCells, nextCellsPosition);
         const collidedWithAnotherBlock = this.stuckCells
             .find(otherBlockCell => nextCellsPosition
                 .find(cell =>
