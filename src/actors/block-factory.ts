@@ -8,6 +8,8 @@ export class BlockFactory {
             BlockFactory.giantI(),
             BlockFactory.sShaped(),
             BlockFactory.zShaped(),
+            BlockFactory.lShaped(),
+            BlockFactory.lInvertedShaped(),
             BlockFactory.tShaped()
         ];
         const randomIndex = Math.floor(Math.random() * possibles.length);
@@ -32,5 +34,13 @@ export class BlockFactory {
 
     private static tShaped(): Point[] {
         return [new Point(-1, 0), new Point(0, 0), new Point(0, 1), new Point(1, 0)];
+    }
+
+    private static lShaped(): Point[] {
+        return [new Point(0, -1), new Point(0, 0), new Point(0, 1), new Point(1, 1)];
+    }
+
+    private static lInvertedShaped(): Point[] {
+        return [new Point(0, -1), new Point(0, 0), new Point(0, 1), new Point(-1, 1)];
     }
 }
