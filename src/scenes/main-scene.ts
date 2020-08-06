@@ -8,11 +8,8 @@ import {EventManager} from '../event-manager/event-manager';
 export class MainScene extends Phaser.Scene {
 
     private gameRunning: boolean;
-    private inputManager: InputManager;
-    private aliveBlock: AliveBlockHandler;
     private updateTimeCounterMs: number = 0;
     private milliSecondsPerLevel: number = 200;
-    private stuckBlocksHandler: BoardHandler;
     private totalTime: number;
 
     constructor() {
@@ -25,9 +22,9 @@ export class MainScene extends Phaser.Scene {
         EventManager.emit(Events.GAME_BEGAN);
         this.gameRunning = true;
         this.totalTime = 0;
-        this.stuckBlocksHandler = new BoardHandler({scene: this});
-        this.aliveBlock = new AliveBlockHandler({scene: this});
-        this.inputManager = new InputManager(this);
+        new BoardHandler({scene: this});
+        new AliveBlockHandler({scene: this});
+        new InputManager(this);
         EventManager.emit(Events.BOARD_CREATE_NEW_BLOCK);
         this.registerToEvents();
     }
