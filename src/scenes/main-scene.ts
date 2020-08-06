@@ -1,9 +1,7 @@
-import Point = Phaser.Geom.Point;
 import {Command} from '../command';
-import {Block} from '../actors/block';
-import {ColorBlender} from '../color-blender';
 import {InputManager} from '../input-manager';
 import {Events} from '../event-manager/events';
+import {AliveBlock} from '../actors/alive-block';
 import {BlockFactory} from '../actors/block-factory';
 import {EventManager} from '../event-manager/event-manager';
 import {StuckBlocksHandler} from '../actors/stuck-blocks-handler';
@@ -12,10 +10,9 @@ export class MainScene extends Phaser.Scene {
 
     private gameRunning: boolean;
     private inputManager: InputManager;
-    private aliveBlock: Block;
+    private aliveBlock: AliveBlock;
     private updateTimeCounterMs: number = 0;
     private milliSecondsPerTile: number = 200;
-    private stuckCells: Point[];
     private stuckBlocksHandler: StuckBlocksHandler;
     private totalTime: number;
 
@@ -27,9 +24,8 @@ export class MainScene extends Phaser.Scene {
 
     public async create(): Promise<void> {
         this.totalTime = 0;
-        this.stuckCells = [];
-        this.aliveBlock = this.createBlock();
         this.stuckBlocksHandler = new StuckBlocksHandler({scene: this});
+        this.aliveBlock = this.createBlock();
         this.gameRunning = true;
         this.inputManager = new InputManager(this);
 
@@ -51,23 +47,19 @@ export class MainScene extends Phaser.Scene {
                 this.updateTimeCounterMs += 200;
             }
         });
-        EventManager.on(Events.STUCK_BLOCKS_ELIMINATED, stuckCells => this.stuckCells = stuckCells);
         EventManager.on(Events.BLOCK_DIED, event => {
             if (event.stuckCells.find(cell => cell.y < 0)) {
                 EventManager.emit(Events.GAME_OVER);
             } else {
-                this.stuckCells.push(event.stuckCells);
                 this.aliveBlock = this.createBlock();
             }
         });
     }
 
-    private createBlock(): Block {
-        return new Block({
+    private createBlock(): AliveBlock {
+        return new AliveBlock({
             cells: new BlockFactory().randomlyCreateBlock(),
-            scene: this,
-            stuckCells: this.stuckCells,
-            color: new ColorBlender().generateColor()
+            scene: this
         });
     }
 

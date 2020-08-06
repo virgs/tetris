@@ -5,5 +5,6 @@ export enum Events {
     INPUT_COMMAND,
     GAME_BEGAN,
     GAME_OVER,
-    STUCK_BLOCKS_ELIMINATED,
+    BLOCK_CREATED,
+    FULL_STUCK_CELLS_LIST,
 }

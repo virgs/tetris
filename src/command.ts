@@ -1,6 +1,6 @@
 export enum Command {
     Right,
     Left,
-    Turn,
+    Rotate,
     Down
 }

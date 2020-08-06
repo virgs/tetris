@@ -1,7 +1,7 @@
-import {EventManager} from '../event-manager/event-manager';
-import {Events} from '../event-manager/events';
 import {scale} from '../scale';
 import dimension from '../level-dimension';
+import {Events} from '../event-manager/events';
+import {EventManager} from '../event-manager/event-manager';
 import Point = Phaser.Geom.Point;
 
 export class StuckBlocksHandler {
@@ -19,6 +19,7 @@ export class StuckBlocksHandler {
             this.renderSprites();
         });
 
+        EventManager.on(Events.BLOCK_CREATED, () => EventManager.emit(Events.FULL_STUCK_CELLS_LIST, {stuckCells: this.cells}));
     }
 
     private renderSprites() {
@@ -58,6 +59,5 @@ export class StuckBlocksHandler {
                 }, []);
         }
 
-        EventManager.emit(Events.STUCK_BLOCKS_ELIMINATED, this.cells);
     }
 }
