@@ -1,0 +1,9 @@
+export enum Events {
+    BLOCK_MOVED,
+    SPEED_CHANGED,
+    BLOCK_DIED,
+    INPUT_COMMAND,
+    GAME_BEGAN,
+    GAME_OVER,
+    STUCK_BLOCKS_ELIMINATED,
+}

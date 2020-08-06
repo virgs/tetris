@@ -1,0 +1,13 @@
+{
+  "name": "Snake Hole",
+  "short_name": "Snake Hole",
+  "start_url": "index.html",
+  "display": "standalone",
+  "icons": [{
+    "src": "assets/images/gui.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }],
+  "background_color": "#000",
+  "theme_color": "#000"
+}

@@ -1,0 +1,27 @@
+@font-face {
+    font-family: "Connection";
+    src: url("../../assets/fonts/Connection.ttf") format("truetype");
+}
+
+body {
+    margin: 0;
+    font-size: 10px;
+    color: black;
+}
+
+body div.container {
+    background-color: black;
+    text-align: center;
+    min-height: 100vh;
+}
+
+body div.container div#game {
+    border: 2px solid rebeccapurple;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
