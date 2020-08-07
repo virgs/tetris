@@ -1,8 +1,8 @@
 import {Command} from '../command';
 import {InputManager} from '../input-manager';
 import {Events} from '../event-manager/events';
-import {BoardHandler} from '../actors/board-handler';
-import {AliveBlockHandler} from '../actors/alive-block-handler';
+import {Board} from '../actors/board';
+import {FallingBlock} from '../actors/falling-block';
 import {EventManager} from '../event-manager/event-manager';
 
 export class MainScene extends Phaser.Scene {
@@ -22,9 +22,9 @@ export class MainScene extends Phaser.Scene {
         EventManager.emit(Events.GAME_BEGAN);
         this.gameRunning = true;
         this.totalTime = 0;
-        new BoardHandler({scene: this});
-        new AliveBlockHandler({scene: this});
-        new InputManager(this);
+        new Board({scene: this});
+        new FallingBlock({scene: this});
+        new InputManager({scene: this});
         EventManager.emit(Events.BOARD_CREATE_NEW_BLOCK);
         this.registerToEvents();
     }

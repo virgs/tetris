@@ -5,7 +5,7 @@ import {Events} from '../event-manager/events';
 import {EventManager} from '../event-manager/event-manager';
 import Point = Phaser.Geom.Point;
 
-export class BoardHandler {
+export class Board {
     private scene: Phaser.Scene;
     private stuckCells: Point[];
     private sprites: Phaser.GameObjects.Sprite[];

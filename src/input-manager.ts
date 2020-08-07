@@ -14,8 +14,8 @@ export class InputManager {
     private updateTimeCounterMs: number = 0;
     private readonly millisecondsPerUpdate: number = 100;
 
-    constructor(scene: Phaser.Scene) {
-        this.scene = scene;
+    constructor(options: { scene: Phaser.Scene }) {
+        this.scene = options.scene;
         this.registerInputEvents();
         this.sprites.push(this.createSprite(new Point(0, dimension.y / 2),
             () => EventManager.emit(Events.INPUT_COMMAND, Command.Left)));

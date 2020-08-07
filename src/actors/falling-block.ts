@@ -6,14 +6,14 @@ import {Events} from '../event-manager/events';
 import {EventManager} from '../event-manager/event-manager';
 import Point = Phaser.Geom.Point;
 
-export class AliveBlockHandler {
+export class FallingBlock {
     private scene: Phaser.Scene;
     private stuckCells: Point[];
     private position: Phaser.Geom.Point;
     private sprites: Phaser.GameObjects.Sprite[];
     private cells: Phaser.Geom.Point[];
     private nextCommand: Command[] = [];
-    private readonly color: string;
+    private color: string;
 
     public constructor(options: { scene: Phaser.Scene }) {
         this.color = new ColorBlender().generateColor();
@@ -26,8 +26,9 @@ export class AliveBlockHandler {
 
         EventManager.on(Events.UPDATE, () => this.update());
         EventManager.on(Events.CREATE_BLOCK, (event: { cells: Point[], stuckCells: Point[] }) => {
+            this.color = new ColorBlender().generateColor();
             this.nextCommand = [];
-            this.position = new Point(dimension.x / 2 - 1, -5);
+            this.position = new Point(dimension.x / 2 - 1, -(event.cells.length + 1));
             this.cells = event.cells;
             this.stuckCells = event.stuckCells;
         });
@@ -109,6 +110,7 @@ export class AliveBlockHandler {
     }
 
     private rotateClockWise(turnedCells: Phaser.Geom.Point[]) {
+        // Rotation matrix. Who would say those college classes would be useful?
         return turnedCells.map(cell => new Point(-cell.y, cell.x));
     }
 }
