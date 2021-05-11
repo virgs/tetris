@@ -10,16 +10,16 @@ body {
 }
 
 body div.container {
-    background-color: black;
+    background-color: #242424;
     text-align: center;
     min-height: 100vh;
+    padding: 10px;
 }
 
 body div.container div#game {
-    border: 2px solid rebeccapurple;
+    border: 4px solid #535353;
     display: block;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto;
     position: absolute;
     top: 50%;
     left: 50%;

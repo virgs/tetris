@@ -8,9 +8,10 @@ import {EventManager} from '../event-manager/event-manager';
 export class MainScene extends Phaser.Scene {
 
     private gameRunning: boolean;
-    private updateTimeCounterMs: number = 0;
+    private fastPaceEnabled: boolean = false;
     private milliSecondsPerLevel: number = 200;
     private totalTime: number;
+    private updateTimeCounterMs: number = 0;
 
     constructor() {
         super({
@@ -33,9 +34,10 @@ export class MainScene extends Phaser.Scene {
         if (this.gameRunning) {
             this.totalTime += delta;
             this.updateTimeCounterMs += delta;
-            if (this.updateTimeCounterMs > this.milliSecondsPerLevel) {
+            if (this.updateTimeCounterMs > this.milliSecondsPerLevel || this.fastPaceEnabled) {
+                this.fastPaceEnabled = false;
                 this.updateTimeCounterMs %= this.milliSecondsPerLevel;
-                this.milliSecondsPerLevel = Math.max(this.milliSecondsPerLevel * .999, 85);
+                this.milliSecondsPerLevel = Math.max(this.milliSecondsPerLevel * .999, 100);
                 EventManager.emit(Events.GO_DOWN_ONE_LEVEL);
             }
             EventManager.emit(Events.UPDATE, delta);
@@ -46,13 +48,13 @@ export class MainScene extends Phaser.Scene {
         EventManager.on(Events.GAME_OVER, () => {
             this.gameRunning = false;
             setTimeout(() => {
-                const score = this.totalTime / 1000;
-                this.scene.start('ScoreScene', {score: score.toFixed(1)});
+                EventManager.emit(Events.CLEAR_SCENE);
+                this.scene.start('SplashScene');
             }, 2000);
         });
         EventManager.on(Events.INPUT_COMMAND, command => {
             if (command === Command.Down) {
-                this.updateTimeCounterMs += 200;
+                this.fastPaceEnabled = true;
             }
         });
         EventManager.on(Events.BLOCK_DIED, event => {

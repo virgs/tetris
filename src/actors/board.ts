@@ -5,64 +5,90 @@ import {Events} from '../event-manager/events';
 import {EventManager} from '../event-manager/event-manager';
 import Point = Phaser.Geom.Point;
 
+export type StuckCell = { block: Point, color: string };
+
 export class Board {
     private scene: Phaser.Scene;
-    private stuckCells: Point[];
+    private stuckCells: StuckCell[];
+    private backgroundSprite: Phaser.GameObjects.Sprite;
     private sprites: Phaser.GameObjects.Sprite[];
 
     public constructor(options: { scene: Phaser.Scene }) {
         this.scene = options.scene;
+        this.backgroundSprite = options.scene.add.sprite(0,
+            0, 'empty-background.png');
+        this.backgroundSprite.setOrigin(0, 0);
+        this.backgroundSprite.setScale(scale / 10);
         this.sprites = [];
         this.stuckCells = [];
-        EventManager.on(Events.BLOCK_DIED, (event: { stuckCells: Point[] }) => {
-            this.stuckCells = this.stuckCells.concat(event.stuckCells);
+        this.registerToEvents();
+    }
+
+    private registerToEvents() {
+        EventManager.on(Events.CLEAR_SCENE, () => {
+            this.sprites
+                .forEach(sprite => sprite.destroy());
+            this.stuckCells = [];
+            this.sprites = [];
+        });
+        EventManager.on(Events.BLOCK_DIED, (event: { stuckCells: Point[], color: string }) => {
+            this.stuckCells = this.stuckCells.concat(event.stuckCells
+                .map(deadCell => ({block: deadCell, color: event.color})));
             this.detectLineElimination();
             this.renderSprites();
         });
 
         EventManager.on(Events.BOARD_CREATE_NEW_BLOCK, () => {
+            const newBlock = new BlockFactory().randomlyCreateBlock();
             EventManager.emit(Events.CREATE_BLOCK, {
-                cells: new BlockFactory().randomlyCreateBlock(),
+                cells: newBlock.blocks,
+                color: newBlock.color,
                 stuckCells: this.stuckCells
             });
         });
     }
 
     private renderSprites() {
-        this.sprites.forEach(sprite => sprite.destroy());
+        this.sprites
+            .forEach(sprite => sprite.destroy());
         this.sprites = [];
-        this.stuckCells.forEach(cell => {
-            const sprite = this.scene.add.sprite(cell.x * scale + (scale / 2),
-                cell.y * scale + (scale / 2), 'wall.bmp');
-            sprite.setScale(scale / sprite.width);
-            sprite.setAlpha(0.75);
-            this.sprites.push(sprite);
-        });
+        this.stuckCells
+            .forEach(cell => {
+                const sprite = this.scene.add.sprite(cell.block.x * scale + (scale / 2),
+                    cell.block.y * scale + (scale / 2), 'wall.bmp');
+                sprite.setScale(scale / sprite.width);
+                sprite.setAlpha(0.95);
+                sprite.setTint(cell.color as any);
+                this.sprites.push(sprite);
+            });
     }
 
     private detectLineElimination() {
         const lineCounter = [...Array(+dimension.y)]
             .map(_ => +dimension.x);
         this.stuckCells
-            .forEach(cell => --lineCounter[cell.y]);
+            .forEach(cell => --lineCounter[cell.block.y]);
         const linesToEliminate = lineCounter.reduce((acc, line, index) => {
             if (line <= 0) {
                 acc.push(index);
             }
             return acc;
         }, []);
-        if (linesToEliminate.length) {
+        if (linesToEliminate.length > 0) {
             this.stuckCells = this.stuckCells
                 .reduce((cells, cell) => {
-                    if (linesToEliminate.includes(cell.y)) {
+                    if (linesToEliminate.includes(cell.block.y)) {
                         return cells;
                     }
                     const linesToDescend = linesToEliminate
-                        .filter(line => line > cell.y)
+                        .filter(line => line > cell.block.y)
                         .length;
-                    cells.push(new Point(cell.x, cell.y + linesToDescend));
+                    cells.push({
+                        block: new Point(cell.block.x, cell.block.y + linesToDescend),
+                        color: cell.color,
+                    });
                     return cells;
-                }, []);
+                }, [] as StuckCell[]);
         }
 
     }

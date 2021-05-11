@@ -1,9 +1,9 @@
 import {scale} from '../scale';
 import {Command} from '../command';
 import dimension from '../level-dimension';
-import {ColorBlender} from '../color-blender';
 import {Events} from '../event-manager/events';
 import {EventManager} from '../event-manager/event-manager';
+import {StuckCell} from './board';
 import Point = Phaser.Geom.Point;
 
 export class FallingBlock {
@@ -16,7 +16,6 @@ export class FallingBlock {
     private color: string;
 
     public constructor(options: { scene: Phaser.Scene }) {
-        this.color = new ColorBlender().generateColor();
         this.scene = options.scene;
         this.stuckCells = [];
         this.cells = [];
@@ -25,12 +24,12 @@ export class FallingBlock {
         this.position = new Point(dimension.x / 2 - 1, -5);
 
         EventManager.on(Events.UPDATE, () => this.update());
-        EventManager.on(Events.CREATE_BLOCK, (event: { cells: Point[], stuckCells: Point[] }) => {
-            this.color = new ColorBlender().generateColor();
+        EventManager.on(Events.CREATE_BLOCK, (event: { cells: Point[], stuckCells: StuckCell[], color: string }) => {
+            this.color = event.color;
             this.nextCommand = [];
             this.position = new Point(dimension.x / 2 - 1, -(event.cells.length + 1));
             this.cells = event.cells;
-            this.stuckCells = event.stuckCells;
+            this.stuckCells = event.stuckCells.map(cell => cell.block);
         });
         EventManager.on(Events.INPUT_COMMAND, command => this.nextCommand.push(command));
         EventManager.on(Events.GO_DOWN_ONE_LEVEL, () => this.goDownOneLevel());
@@ -45,7 +44,7 @@ export class FallingBlock {
             this.sprites.forEach(sprite => sprite.destroy());
             this.sprites = [];
             EventManager.emit(Events.BLOCK_DIED, {
-                block: this,
+                color: this.color,
                 stuckCells: this.cells
                     .map(cell => new Point(this.position.x + cell.x, this.position.y + cell.y))
             });
@@ -53,11 +52,11 @@ export class FallingBlock {
     }
 
     private update(): void {
-        if (this.nextCommand.includes(Command.Rotate)) {
-            this.nextCommand = [Command.Rotate,
-                ...this.nextCommand
-                    .filter(command => command !== Command.Rotate)];
-        }
+        // if (this.nextCommand.includes(Command.Rotate)) {
+        //     this.nextCommand = [Command.Rotate,
+        //         ...this.nextCommand
+        //             .filter(command => command !== Command.Rotate)];
+        // }
         while (this.nextCommand.length > 0) {
             this.position = this.calculateNextPosition(this.nextCommand.shift());
             this.renderSprites();
@@ -110,7 +109,7 @@ export class FallingBlock {
     }
 
     private rotateClockWise(turnedCells: Phaser.Geom.Point[]) {
-        // Rotation matrix. Who would say those college classes would be useful?
+        // 2D Rotation matrix. Who would say those college classes would be useful?
         return turnedCells.map(cell => new Point(-cell.y, cell.x));
     }
 }

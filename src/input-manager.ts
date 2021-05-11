@@ -6,17 +6,27 @@ import {EventManager} from './event-manager/event-manager';
 import KeyCodes = Phaser.Input.Keyboard.KeyCodes;
 import Point = Phaser.Geom.Point;
 
+enum CommandResponse {
+    FAST = 100,
+    SLOW = 200
+}
+
+type Input = {
+    keyCode: Phaser.Input.Keyboard.Key;
+    command: Command,
+    millisecondsSinceLastActivation: number,
+    commandResponse: CommandResponse
+};
+
 export class InputManager {
     private readonly scene: Phaser.Scene;
 
     private readonly sprites: Phaser.GameObjects.Sprite[] = [];
-    private keyboardInput: { keyCode: Phaser.Input.Keyboard.Key; command: Command }[];
-    private updateTimeCounterMs: number = 0;
-    private readonly millisecondsPerUpdate: number = 100;
+    private readonly keyboardInput: Input[];
 
     constructor(options: { scene: Phaser.Scene }) {
         this.scene = options.scene;
-        this.registerInputEvents();
+        this.keyboardInput = this.registerInputEvents();
         this.sprites.push(this.createSprite(new Point(0, dimension.y / 2),
             () => EventManager.emit(Events.INPUT_COMMAND, Command.Left)));
         this.sprites.push(this.createSprite(new Point(dimension.x, dimension.y / 2),
@@ -32,21 +42,35 @@ export class InputManager {
     }
 
     private update(delta: number) {
-        this.updateTimeCounterMs += delta;
-        if (this.updateTimeCounterMs > this.millisecondsPerUpdate) {
-            this.updateTimeCounterMs %= this.millisecondsPerUpdate;
-            this.keyboardInput
-                .filter(key => key.keyCode.isDown)
-                .forEach(key => EventManager.emit(Events.INPUT_COMMAND, key.command));
-        }
+        this.keyboardInput.forEach(input => {
+            input.millisecondsSinceLastActivation += delta;
+            if (input.millisecondsSinceLastActivation > input.commandResponse) {
+                if (input.keyCode.isDown) {
+                    input.millisecondsSinceLastActivation = 0;
+                    EventManager.emit(Events.INPUT_COMMAND, input.command);
+                }
+            }
+        });
     }
 
-    private registerInputEvents() {
-        this.keyboardInput = [
-            {command: Command.Rotate, keyCode: this.scene.input.keyboard.addKey(KeyCodes.UP)},
-            {command: Command.Left, keyCode: this.scene.input.keyboard.addKey(KeyCodes.LEFT)},
-            {command: Command.Down, keyCode: this.scene.input.keyboard.addKey(KeyCodes.DOWN)},
-            {command: Command.Right, keyCode: this.scene.input.keyboard.addKey(KeyCodes.RIGHT)}
+    private registerInputEvents(): Input[] {
+        return [
+            {
+                command: Command.Rotate, keyCode: this.scene.input.keyboard.addKey(KeyCodes.UP),
+                millisecondsSinceLastActivation: 0, commandResponse: CommandResponse.SLOW
+            },
+            {
+                command: Command.Left, keyCode: this.scene.input.keyboard.addKey(KeyCodes.LEFT),
+                millisecondsSinceLastActivation: 0, commandResponse: CommandResponse.FAST
+            },
+            {
+                command: Command.Down, keyCode: this.scene.input.keyboard.addKey(KeyCodes.DOWN),
+                millisecondsSinceLastActivation: 0, commandResponse: CommandResponse.FAST
+            },
+            {
+                command: Command.Right, keyCode: this.scene.input.keyboard.addKey(KeyCodes.RIGHT),
+                millisecondsSinceLastActivation: 0, commandResponse: CommandResponse.FAST
+            }
         ];
     }
 

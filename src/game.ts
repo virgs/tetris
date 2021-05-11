@@ -4,15 +4,14 @@ import 'phaser';
 import {scale} from './scale';
 import dimension from './level-dimension';
 import {MainScene} from './scenes/main-scene';
-import {ScoreScene} from './scenes/score-scene';
 import {SplashScene} from './scenes/splash-scene';
 
 const config: GameConfig = {
-    width: dimension.x * scale,
+    width: dimension.x * scale * 1.5,
     height: dimension.y * scale,
     type: Phaser.AUTO,
     parent: 'game',
-    scene: [SplashScene, ScoreScene, MainScene],
+    scene: [SplashScene, MainScene],
 };
 
 export class Game extends Phaser.Game {
