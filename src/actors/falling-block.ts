@@ -33,6 +33,7 @@ export class FallingBlock {
         });
         EventManager.on(Events.INPUT_COMMAND, command => this.nextCommand.push(command));
         EventManager.on(Events.GO_DOWN_ONE_LEVEL, () => this.goDownOneLevel());
+        EventManager.on(Events.GAME_OVER, () => this.sprites.forEach(sprite => sprite.destroy()));
     }
 
     private goDownOneLevel() {

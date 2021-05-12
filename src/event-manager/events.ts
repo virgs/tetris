@@ -10,6 +10,5 @@ export enum Events {
     UPDATE,
     CREATE_BLOCK,
     BOARD_CREATE_NEW_BLOCK,
-    CLEAR_SCENE,
     RANDOMLY_GENERATE_NEXT_BLOCK,
 }

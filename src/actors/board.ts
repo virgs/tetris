@@ -24,12 +24,6 @@ export class Board {
     }
 
     private registerToEvents() {
-        EventManager.on(Events.CLEAR_SCENE, () => {
-            this.sprites
-                .forEach(sprite => sprite.destroy());
-            this.stuckCells = [];
-            this.sprites = [];
-        });
         EventManager.on(Events.BLOCK_DIED, (event: { stuckCells: Point[], color: string }) => {
             this.stuckCells = this.stuckCells.concat(event.stuckCells
                 .map(deadCell => ({block: deadCell, color: event.color})));

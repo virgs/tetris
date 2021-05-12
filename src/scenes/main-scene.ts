@@ -22,17 +22,22 @@ export class MainScene extends Phaser.Scene {
     }
 
     public async create(): Promise<void> {
-        this.backgroundMusic = this.sound.add('game-opener', {volume: 0.5});
-        this.backgroundMusic.play();
+        this.initMembers();
         EventManager.emit(Events.GAME_BEGAN);
-        this.gameRunning = true;
-        this.totalTime = 0;
         new Board({scene: this});
         new FallingBlock({scene: this});
         new InputManager({scene: this});
         new BlockFactory({scene: this});
         EventManager.emit(Events.BOARD_CREATE_NEW_BLOCK);
         this.registerToEvents();
+    }
+
+    private initMembers() {
+        this.milliSecondsPerLevel = 200;
+        this.backgroundMusic = this.sound.add('game-opener', {volume: 0.5});
+        this.backgroundMusic.play();
+        this.gameRunning = true;
+        this.totalTime = 0;
     }
 
     public update(time: number, delta: number): void {
@@ -51,11 +56,9 @@ export class MainScene extends Phaser.Scene {
 
     private registerToEvents() {
         EventManager.on(Events.GAME_OVER, () => {
+            EventManager.destroy();
             this.gameRunning = false;
-            setTimeout(() => {
-                EventManager.emit(Events.CLEAR_SCENE);
-                this.scene.start('SplashScene');
-            }, 5000);
+            setTimeout(() => this.scene.start('SplashScene'), 5000);
         });
         EventManager.on(Events.INPUT_COMMAND, command => {
             if (command === Command.Down) {
