@@ -58,16 +58,7 @@ export class Board {
     }
 
     private detectLineElimination() {
-        const lineCounter = [...Array(+dimension.y)]
-            .map(_ => +dimension.x);
-        this.stuckCells
-            .forEach(cell => --lineCounter[cell.block.y]);
-        const linesToEliminate = lineCounter.reduce((acc, line, index) => {
-            if (line <= 0) {
-                acc.push(index);
-            }
-            return acc;
-        }, []);
+        const linesToEliminate = this.linesWithMoreBlocksThanPossible();
         if (linesToEliminate.length > 0) {
             this.stuckCells = this.stuckCells
                 .reduce((cells, cell) => {
@@ -86,5 +77,19 @@ export class Board {
             this.scene.sound.add('points', {volume: 0.5}).play();
         }
 
+    }
+
+    private linesWithMoreBlocksThanPossible() {
+        const lineCounter = [...Array(+dimension.y)]
+            .map(_ => +dimension.x);
+        this.stuckCells
+            .forEach(cell => --lineCounter[cell.block.y]);
+        const linesToEliminate = lineCounter.reduce((acc, line, index) => {
+            if (line <= 0) {
+                acc.push(index);
+            }
+            return acc;
+        }, []);
+        return linesToEliminate;
     }
 }
