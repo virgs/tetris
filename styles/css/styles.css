@@ -26,13 +26,13 @@ body div.container div#game {
 }
 
 body div.timer {
-    width: 25%;
+    width: 33%;
     text-align: center;
     font-family: "Modern tetris", monospace;
     padding: 10px;
     position: absolute;
     top: 0;
-    left: 0;
+    right: 0;
     font-size: 3em;
     color: #5798e8;
 }
