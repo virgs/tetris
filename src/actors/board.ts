@@ -1,6 +1,5 @@
 import {scale} from '../scale';
 import dimension from '../level-dimension';
-import {BlockFactory} from './block-factory';
 import {Events} from '../event-manager/events';
 import {EventManager} from '../event-manager/event-manager';
 import Point = Phaser.Geom.Point;
@@ -39,12 +38,7 @@ export class Board {
         });
 
         EventManager.on(Events.BOARD_CREATE_NEW_BLOCK, () => {
-            const newBlock = new BlockFactory().randomlyCreateBlock();
-            EventManager.emit(Events.CREATE_BLOCK, {
-                cells: newBlock.blocks,
-                color: newBlock.color,
-                stuckCells: this.stuckCells
-            });
+            EventManager.emit(Events.RANDOMLY_GENERATE_NEXT_BLOCK, {stuckCells: this.stuckCells});
         });
     }
 
@@ -89,6 +83,7 @@ export class Board {
                     });
                     return cells;
                 }, [] as StuckCell[]);
+            this.scene.sound.add('points', {volume: 0.5}).play();
         }
 
     }
