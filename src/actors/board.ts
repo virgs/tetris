@@ -75,6 +75,8 @@ export class Board {
                     return cells;
                 }, [] as StuckCell[]);
             this.scene.sound.add('points', {volume: 0.5}).play();
+        } else {
+            this.scene.sound.add('stuck', {volume: 0.5}).play();
         }
 
     }
@@ -84,12 +86,11 @@ export class Board {
             .map(_ => +dimension.x);
         this.stuckCells
             .forEach(cell => --lineCounter[cell.block.y]);
-        const linesToEliminate = lineCounter.reduce((acc, line, index) => {
+        return lineCounter.reduce((acc, line, index) => {
             if (line <= 0) {
                 acc.push(index);
             }
             return acc;
         }, []);
-        return linesToEliminate;
     }
 }

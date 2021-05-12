@@ -24,7 +24,6 @@ export class SplashScene extends Phaser.Scene {
         logo.setScale(scaleRatio, scaleRatio);
 
         this.loadImages();
-        this.loadFonts();
         this.loadSounds();
         this.load.start();
         this.load.on('complete', () => this.loadCompleted = true);
@@ -56,13 +55,8 @@ export class SplashScene extends Phaser.Scene {
         imagesToLoad.forEach(image => this.load.image(image, `./assets/images/${image}`));
     }
 
-    private loadFonts() {
-        this.load.bitmapFont('scoreFont',
-            `./assets/fonts/PressStart2P-Regular.png`,
-            `./assets/fonts/PressStart2P-Regular.fnt`);
-    }
-
     private loadSounds() {
+        this.load.audio('stuck', `./assets/sounds/stuck.mp3`, {volume: 0.5});
         this.load.audio('game-opener', `./assets/sounds/game-opener.wav`, {volume: 0.5});
         this.load.audio('points', `./assets/sounds/points.wav`, {volume: 0.5});
     }
