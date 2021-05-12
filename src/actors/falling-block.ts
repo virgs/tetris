@@ -52,11 +52,6 @@ export class FallingBlock {
     }
 
     private update(): void {
-        // if (this.nextCommand.includes(Command.Rotate)) {
-        //     this.nextCommand = [Command.Rotate,
-        //         ...this.nextCommand
-        //             .filter(command => command !== Command.Rotate)];
-        // }
         while (this.nextCommand.length > 0) {
             this.position = this.calculateNextPosition(this.nextCommand.shift());
             this.renderSprites();

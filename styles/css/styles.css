@@ -1,6 +1,6 @@
 @font-face {
-    font-family: "Connection";
-    src: url("../../assets/fonts/Connection.ttf") format("truetype");
+    font-family: "Modern tetris";
+    src: url("../../assets/fonts/modern-tetris.ttf") format("truetype");
 }
 
 body {
@@ -13,7 +13,6 @@ body div.container {
     background-color: #242424;
     text-align: center;
     min-height: 100vh;
-    padding: 10px;
 }
 
 body div.container div#game {
@@ -24,4 +23,14 @@ body div.container div#game {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+body div.hud {
+    font-family: "Modern tetris", monospace;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -75%);
+    left: 50%;
+    font-size: 15em;
+    color: #5798e8;
 }

@@ -4,6 +4,7 @@ import {Events} from '../event-manager/events';
 import {Board} from '../actors/board';
 import {FallingBlock} from '../actors/falling-block';
 import {EventManager} from '../event-manager/event-manager';
+import {BlockFactory} from '../actors/block-factory';
 
 export class MainScene extends Phaser.Scene {
 
@@ -12,6 +13,7 @@ export class MainScene extends Phaser.Scene {
     private milliSecondsPerLevel: number = 200;
     private totalTime: number;
     private updateTimeCounterMs: number = 0;
+    private backgroundMusic: Phaser.Sound.BaseSound;
 
     constructor() {
         super({
@@ -20,12 +22,15 @@ export class MainScene extends Phaser.Scene {
     }
 
     public async create(): Promise<void> {
+        this.backgroundMusic = this.sound.add('game-opener', {volume: 0.5});
+        this.backgroundMusic.play();
         EventManager.emit(Events.GAME_BEGAN);
         this.gameRunning = true;
         this.totalTime = 0;
         new Board({scene: this});
         new FallingBlock({scene: this});
         new InputManager({scene: this});
+        new BlockFactory({scene: this});
         EventManager.emit(Events.BOARD_CREATE_NEW_BLOCK);
         this.registerToEvents();
     }
@@ -50,7 +55,7 @@ export class MainScene extends Phaser.Scene {
             setTimeout(() => {
                 EventManager.emit(Events.CLEAR_SCENE);
                 this.scene.start('SplashScene');
-            }, 2000);
+            }, 5000);
         });
         EventManager.on(Events.INPUT_COMMAND, command => {
             if (command === Command.Down) {
