@@ -25,6 +25,18 @@ body div.container div#game {
     transform: translate(-50%, -50%);
 }
 
+body div.timer {
+    width: 25%;
+    text-align: center;
+    font-family: "Modern tetris", monospace;
+    padding: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 3em;
+    color: #5798e8;
+}
+
 body div.hud {
     font-family: "Modern tetris", monospace;
     position: absolute;

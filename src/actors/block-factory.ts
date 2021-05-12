@@ -48,49 +48,49 @@ export class BlockFactory {
     private static squareBlock(): { blocks: Point[], color: string } {
         return {
             blocks: [new Point(0, 0), new Point(0, 1), new Point(1, 0), new Point(1, 1)],
-            color: '0x465362'
+            color: '0xe2d210'
         };
     }
 
     private static giantI(): { blocks: Point[], color: string } {
         return {
             blocks: [new Point(0, -1), new Point(0, 0), new Point(0, 1), new Point(0, 2)],
-            color: '0x358600'
+            color: '0x3fb04a'
         };
     }
 
     private static sShaped(): { blocks: Point[], color: string } {
         return {
             blocks: [new Point(-1, 1), new Point(0, 1), new Point(0, 0), new Point(1, 0)],
-            color: '0x9DBEBB'
+            color: '0xdb6f27'
         };
     }
 
     private static zShaped(): { blocks: Point[], color: string } {
         return {
             blocks: [new Point(-1, 0), new Point(0, 0), new Point(0, 1), new Point(1, 1)],
-            color: '0xBF6900'
+            color: '0x844d9d'
         };
     }
 
     private static tShaped(): { blocks: Point[], color: string } {
         return {
             blocks: [new Point(-1, 0), new Point(0, 0), new Point(0, 1), new Point(1, 0)],
-            color: '0xCC3363'
+            color: '0x46c6e5'
         };
     }
 
     private static lShaped(): { blocks: Point[], color: string } {
         return {
             blocks: [new Point(0, -1), new Point(0, 0), new Point(0, 1), new Point(1, 1)],
-            color: '0xFF0035'
+            color: '0xFF0000'
         };
     }
 
     private static lInvertedShaped(): { blocks: Point[], color: string } {
         return {
             blocks: [new Point(0, -1), new Point(0, 0), new Point(0, 1), new Point(-1, 1)],
-            color: '0xDDD92A'
+            color: '0x3173b8'
         };
     }
 

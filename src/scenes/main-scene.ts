@@ -13,7 +13,6 @@ export class MainScene extends Phaser.Scene {
     private milliSecondsPerLevel: number = 200;
     private totalTime: number;
     private updateTimeCounterMs: number = 0;
-    private backgroundMusic: Phaser.Sound.BaseSound;
 
     constructor() {
         super({
@@ -33,21 +32,22 @@ export class MainScene extends Phaser.Scene {
     }
 
     private initMembers() {
+        this.sound.add('game-opener', {volume: 0.25}).play();
+        this.updateTimeCounterMs = 0;
         this.milliSecondsPerLevel = 200;
-        this.backgroundMusic = this.sound.add('game-opener', {volume: 0.5});
-        this.backgroundMusic.play();
         this.gameRunning = true;
         this.totalTime = 0;
     }
 
     public update(time: number, delta: number): void {
         if (this.gameRunning) {
+            document.querySelector('body div#time-counter').textContent = (this.totalTime / 1000).toFixed(1);
             this.totalTime += delta;
             this.updateTimeCounterMs += delta;
             if (this.updateTimeCounterMs > this.milliSecondsPerLevel || this.fastPaceEnabled) {
                 this.fastPaceEnabled = false;
                 this.updateTimeCounterMs %= this.milliSecondsPerLevel;
-                this.milliSecondsPerLevel = Math.max(this.milliSecondsPerLevel * .999, 100);
+                this.milliSecondsPerLevel = Math.max(this.milliSecondsPerLevel - delta / 1000, 100);
                 EventManager.emit(Events.GO_DOWN_ONE_LEVEL);
             }
             EventManager.emit(Events.UPDATE, delta);
@@ -67,6 +67,7 @@ export class MainScene extends Phaser.Scene {
         });
         EventManager.on(Events.BLOCK_DIED, event => {
             if (event.stuckCells.find(cell => cell.y < 0)) {
+                this.sound.add('game-over').play();
                 EventManager.emit(Events.GAME_OVER);
             } else {
                 EventManager.emit(Events.BOARD_CREATE_NEW_BLOCK);

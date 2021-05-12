@@ -56,8 +56,9 @@ export class SplashScene extends Phaser.Scene {
     }
 
     private loadSounds() {
+        this.load.audio('game-opener', `./assets/sounds/game-opener.wav`, {volume: 0.25});
+        this.load.audio('game-over', `./assets/sounds/game-over.wav`, {volume: 0.25});
         this.load.audio('stuck', `./assets/sounds/stuck.mp3`, {volume: 0.5});
-        this.load.audio('game-opener', `./assets/sounds/game-opener.wav`, {volume: 0.5});
         this.load.audio('points', `./assets/sounds/points.wav`, {volume: 0.5});
     }
 }
