@@ -25,12 +25,12 @@ export class TetraminoFactory {
         this.scene = options.scene;
         this.nextPiece = TetraminoFactory.randomlyCreateNextBlock();
         this.previewNextPiece();
-        EventManager.on(Events.RANDOMLY_GENERATE_NEXT_BLOCK, (options: { stuckCells: StuckCell[] }) => {
+        EventManager.on(Events.RANDOMLY_GENERATE_NEXT_TETRAMINO, (options: { stuckCells: StuckCell[] }) => {
             const next = this.nextPiece;
             this.nextPiece = TetraminoFactory.randomlyCreateNextBlock();
             this.previewNextPiece();
 
-            EventManager.emit(Events.CREATE_BLOCK, {
+            EventManager.emit(Events.CREATE_TETRAMINO, {
                 cells: next.blocks,
                 color: next.color,
                 stuckCells: options.stuckCells

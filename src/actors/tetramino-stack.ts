@@ -31,8 +31,8 @@ export class TetraminoStack {
             this.renderSprites();
         });
 
-        EventManager.on(Events.BOARD_CREATE_NEW_BLOCK, () => {
-            EventManager.emit(Events.RANDOMLY_GENERATE_NEXT_BLOCK, {stuckCells: this.stuckCells});
+        EventManager.on(Events.COLLECT_STACKED_BLOCKS, () => {
+            EventManager.emit(Events.RANDOMLY_GENERATE_NEXT_TETRAMINO, {stuckCells: this.stuckCells});
         });
     }
 

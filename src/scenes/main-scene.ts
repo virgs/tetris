@@ -27,7 +27,7 @@ export class MainScene extends Phaser.Scene {
         new FallingTetramino({scene: this});
         new InputManager({scene: this});
         new TetraminoFactory({scene: this});
-        EventManager.emit(Events.BOARD_CREATE_NEW_BLOCK);
+        EventManager.emit(Events.COLLECT_STACKED_BLOCKS);
         this.registerToEvents();
     }
 
@@ -70,7 +70,7 @@ export class MainScene extends Phaser.Scene {
                 this.sound.add('game-over').play();
                 EventManager.emit(Events.GAME_OVER);
             } else {
-                EventManager.emit(Events.BOARD_CREATE_NEW_BLOCK);
+                EventManager.emit(Events.COLLECT_STACKED_BLOCKS);
             }
         });
     }

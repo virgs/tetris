@@ -24,7 +24,7 @@ export class FallingTetramino {
         this.position = new Point(dimension.x / 2 - 1, -5);
 
         EventManager.on(Events.UPDATE, () => this.update());
-        EventManager.on(Events.CREATE_BLOCK, (event: { cells: Point[], stuckCells: StuckCell[], color: string }) => {
+        EventManager.on(Events.CREATE_TETRAMINO, (event: { cells: Point[], stuckCells: StuckCell[], color: string }) => {
             this.color = event.color;
             this.nextCommand = [];
             this.position = new Point(dimension.x / 2 - 1, -(event.cells.length + 1));
