@@ -5,6 +5,7 @@ import {Events} from './event-manager/events';
 import {EventManager} from './event-manager/event-manager';
 import KeyCodes = Phaser.Input.Keyboard.KeyCodes;
 import Point = Phaser.Geom.Point;
+import {gameScreenHeight, gameScreenWidth} from './game';
 
 enum CommandResponse {
     FAST = 100,
@@ -27,14 +28,14 @@ export class InputManager {
     constructor(options: { scene: Phaser.Scene }) {
         this.scene = options.scene;
         this.keyboardInput = this.registerInputEvents();
-        this.sprites.push(this.createSprite(new Point(0, dimension.y / 2),
+        this.sprites.push(this.createSprite(new Point(0, gameScreenHeight / 2),
             () => EventManager.emit(Events.INPUT_COMMAND, Command.Left)));
-        this.sprites.push(this.createSprite(new Point(dimension.x, dimension.y / 2),
+        this.sprites.push(this.createSprite(new Point(gameScreenWidth, gameScreenHeight / 2),
             () => EventManager.emit(Events.INPUT_COMMAND, Command.Right)));
 
-        this.sprites.push(this.createSprite(new Point(dimension.x / 2, -dimension.y / 4),
+        this.sprites.push(this.createSprite(new Point(gameScreenWidth / 2, -gameScreenHeight / 4),
             () => EventManager.emit(Events.INPUT_COMMAND, Command.Rotate)));
-        this.sprites.push(this.createSprite(new Point(dimension.x / 2, 5 * dimension.y / 4),
+        this.sprites.push(this.createSprite(new Point(gameScreenWidth / 2, 5 * gameScreenHeight / 4),
             () => EventManager.emit(Events.INPUT_COMMAND, Command.Down)));
 
         EventManager.on(Events.UPDATE, delta => this.update(delta));
@@ -85,7 +86,7 @@ export class InputManager {
         sprite.setInteractive();
         sprite.on('pointerdown', callback);
         sprite.setAlpha(0.01);
-        sprite.setScale(dimension.x * scale / sprite.width, .75 * dimension.y * scale / sprite.height);
+        sprite.setScale(gameScreenWidth / sprite.width, .75 * gameScreenHeight / sprite.height);
         return sprite;
     }
 }

@@ -1,10 +1,10 @@
 import {Command} from '../command';
 import {InputManager} from '../input-manager';
 import {Events} from '../event-manager/events';
-import {Board} from '../actors/board';
-import {FallingBlock} from '../actors/falling-block';
+import {FallingTetramino} from '../actors/falling-tetramino';
 import {EventManager} from '../event-manager/event-manager';
-import {BlockFactory} from '../actors/block-factory';
+import {TetraminoFactory} from '../actors/tetramino-factory';
+import {TetraminoStack} from '../actors/tetramino-stack';
 
 export class MainScene extends Phaser.Scene {
 
@@ -23,10 +23,10 @@ export class MainScene extends Phaser.Scene {
     public async create(): Promise<void> {
         this.initMembers();
         EventManager.emit(Events.GAME_BEGAN);
-        new Board({scene: this});
-        new FallingBlock({scene: this});
+        new TetraminoStack({scene: this});
+        new FallingTetramino({scene: this});
         new InputManager({scene: this});
-        new BlockFactory({scene: this});
+        new TetraminoFactory({scene: this});
         EventManager.emit(Events.BOARD_CREATE_NEW_BLOCK);
         this.registerToEvents();
     }
@@ -65,7 +65,7 @@ export class MainScene extends Phaser.Scene {
                 this.fastPaceEnabled = true;
             }
         });
-        EventManager.on(Events.BLOCK_DIED, event => {
+        EventManager.on(Events.TETRAMINO_STACKED_UP, event => {
             if (event.stuckCells.find(cell => cell.y < 0)) {
                 this.sound.add('game-over').play();
                 EventManager.emit(Events.GAME_OVER);

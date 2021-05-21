@@ -26,6 +26,7 @@ body div.container div#game {
 }
 
 body div.timer {
+    user-select: none;
     width: 33%;
     text-align: center;
     font-family: "Modern tetris", monospace;
@@ -38,6 +39,7 @@ body div.timer {
 }
 
 body div.hud {
+    user-select: none;
     font-family: "Modern tetris", monospace;
     position: absolute;
     top: 50%;

@@ -1,19 +1,19 @@
 import Point = Phaser.Geom.Point;
 import {EventManager} from '../event-manager/event-manager';
 import {Events} from '../event-manager/events';
-import {StuckCell} from './board';
 import {scale} from '../scale';
 import dimension from '../level-dimension';
+import {StuckCell} from './tetramino-stack';
 
-export class BlockFactory {
+export class TetraminoFactory {
     private static readonly blockVariety = [
-        BlockFactory.squareBlock(),
-        BlockFactory.giantI(),
-        BlockFactory.sShaped(),
-        BlockFactory.zShaped(),
-        BlockFactory.lShaped(),
-        BlockFactory.lInvertedShaped(),
-        BlockFactory.tShaped()
+        TetraminoFactory.squareBlock(),
+        TetraminoFactory.giantI(),
+        TetraminoFactory.sShaped(),
+        TetraminoFactory.zShaped(),
+        TetraminoFactory.lShaped(),
+        TetraminoFactory.lInvertedShaped(),
+        TetraminoFactory.tShaped()
     ];
 
     private readonly scene: Phaser.Scene;
@@ -23,12 +23,12 @@ export class BlockFactory {
 
     public constructor(options: { scene: Phaser.Scene }) {
         this.scene = options.scene;
-        this.nextPiece = BlockFactory.randomlyCreateNextBlock();
-        this.showNextPiece();
+        this.nextPiece = TetraminoFactory.randomlyCreateNextBlock();
+        this.previewNextPiece();
         EventManager.on(Events.RANDOMLY_GENERATE_NEXT_BLOCK, (options: { stuckCells: StuckCell[] }) => {
             const next = this.nextPiece;
-            this.nextPiece = BlockFactory.randomlyCreateNextBlock();
-            this.showNextPiece();
+            this.nextPiece = TetraminoFactory.randomlyCreateNextBlock();
+            this.previewNextPiece();
 
             EventManager.emit(Events.CREATE_BLOCK, {
                 cells: next.blocks,
@@ -40,7 +40,7 @@ export class BlockFactory {
     }
 
     private static randomlyCreateNextBlock(): { blocks: Phaser.Geom.Point[]; color: string } {
-        const possibles = BlockFactory.blockVariety;
+        const possibles = TetraminoFactory.blockVariety;
         const randomIndex = Math.floor(Math.random() * possibles.length);
         return possibles[randomIndex];
     }
@@ -94,7 +94,7 @@ export class BlockFactory {
         };
     }
 
-    private showNextPiece() {
+    private previewNextPiece() {
         this.sprites
             .forEach(sprite => sprite.destroy());
         this.sprites = [];

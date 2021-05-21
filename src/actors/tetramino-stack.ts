@@ -6,7 +6,7 @@ import Point = Phaser.Geom.Point;
 
 export type StuckCell = { block: Point, color: string };
 
-export class Board {
+export class TetraminoStack {
     private scene: Phaser.Scene;
     private stuckCells: StuckCell[];
     private backgroundSprite: Phaser.GameObjects.Sprite;
@@ -24,7 +24,7 @@ export class Board {
     }
 
     private registerToEvents() {
-        EventManager.on(Events.BLOCK_DIED, (event: { stuckCells: Point[], color: string }) => {
+        EventManager.on(Events.TETRAMINO_STACKED_UP, (event: { stuckCells: Point[], color: string }) => {
             this.stuckCells = this.stuckCells.concat(event.stuckCells
                 .map(deadCell => ({block: deadCell, color: event.color})));
             this.detectLineElimination();

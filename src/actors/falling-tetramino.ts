@@ -3,10 +3,10 @@ import {Command} from '../command';
 import dimension from '../level-dimension';
 import {Events} from '../event-manager/events';
 import {EventManager} from '../event-manager/event-manager';
-import {StuckCell} from './board';
 import Point = Phaser.Geom.Point;
+import {StuckCell} from './tetramino-stack';
 
-export class FallingBlock {
+export class FallingTetramino {
     private scene: Phaser.Scene;
     private stuckCells: Point[];
     private position: Phaser.Geom.Point;
@@ -44,7 +44,7 @@ export class FallingBlock {
         } else {
             this.sprites.forEach(sprite => sprite.destroy());
             this.sprites = [];
-            EventManager.emit(Events.BLOCK_DIED, {
+            EventManager.emit(Events.TETRAMINO_STACKED_UP, {
                 color: this.color,
                 stuckCells: this.cells
                     .map(cell => new Point(this.position.x + cell.x, this.position.y + cell.y))

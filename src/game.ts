@@ -6,9 +6,11 @@ import dimension from './level-dimension';
 import {MainScene} from './scenes/main-scene';
 import {SplashScene} from './scenes/splash-scene';
 
+export const [gameScreenWidth, gameScreenHeight] = [dimension.x * scale * 1.5, dimension.y * scale];
+
 const config: GameConfig = {
-    width: dimension.x * scale * 1.5,
-    height: dimension.y * scale,
+    width: gameScreenWidth,
+    height: gameScreenHeight,
     type: Phaser.AUTO,
     parent: 'game',
     scene: [SplashScene, MainScene],
