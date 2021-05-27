@@ -31,7 +31,7 @@ export class TetraminoStack {
             if (numberOfLinesEliminated) {
                 MessageManager.emit(Messages.LINES_DELETED, {numberOfLinesEliminated});
             }
-            MessageManager.emit(Messages.TETRAMINO_STACKED_UP, {stuckCells: this.stuckCells});
+            MessageManager.emit(Messages.TETRAMINO_STACK_NEW_CONFIGURATION, {stuckCells: this.stuckCells});
             this.renderSprites();
         });
     }

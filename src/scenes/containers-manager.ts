@@ -69,7 +69,7 @@ export class ContainersManager extends Phaser.Scene {
                 this.fastPaceEnabled = true;
             }
         });
-        MessageManager.on(Messages.TETRAMINO_STACKED_UP, event => {
+        MessageManager.on(Messages.TETRAMINO_STACK_NEW_CONFIGURATION, event => {
             const isSomeCellOverTheRoof = event.stuckCells
                 .some(cell => cell.block.y < 0);
             if (isSomeCellOverTheRoof) {
