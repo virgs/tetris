@@ -1,8 +1,8 @@
 import {Command} from '../command';
 import {InputManager} from '../input-manager';
-import {Messages} from '../event-manager/messages';
+import {Messages} from '../message-manager/messages';
 import {FallingTetramino} from '../actors/falling-tetramino';
-import {MessageManager} from '../event-manager/message-manager';
+import {MessageManager} from '../message-manager/message-manager';
 import {TetraminoFactory} from '../actors/tetramino-factory';
 import {TetraminoStack} from '../actors/tetramino-stack';
 

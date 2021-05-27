@@ -1,8 +1,8 @@
 import {scale} from '../scale';
 import dimension from '../level-dimension';
-import {Messages} from '../event-manager/messages';
-import {MessageManager} from '../event-manager/message-manager';
 import Point = Phaser.Geom.Point;
+import {MessageManager} from '../message-manager/message-manager';
+import {Messages} from '../message-manager/messages';
 
 export type StuckCell = { block: Point, color: string };
 

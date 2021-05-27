@@ -1,11 +1,10 @@
 import {scale} from './scale';
 import {Command} from './command';
-import dimension from './level-dimension';
-import {Messages} from './event-manager/messages';
-import {MessageManager} from './event-manager/message-manager';
+import {MessageManager} from './message-manager/message-manager';
+import {Messages} from './message-manager/messages';
+import {gameScreenHeight, gameScreenWidth} from './game';
 import KeyCodes = Phaser.Input.Keyboard.KeyCodes;
 import Point = Phaser.Geom.Point;
-import {gameScreenHeight, gameScreenWidth} from './game';
 
 enum CommandResponse {
     FAST = 100,
