@@ -1,10 +1,10 @@
 import {scale} from '../scale';
 import {Command} from '../command';
 import dimension from '../level-dimension';
-import {Events} from '../event-manager/events';
-import {EventManager} from '../event-manager/event-manager';
-import Point = Phaser.Geom.Point;
+import {Messages} from '../event-manager/messages';
+import {MessageManager} from '../event-manager/message-manager';
 import {StuckCell} from './tetramino-stack';
+import Point = Phaser.Geom.Point;
 
 export class FallingTetramino {
     private scene: Phaser.Scene;
@@ -23,17 +23,18 @@ export class FallingTetramino {
         this.nextCommand = [];
         this.position = new Point(dimension.x / 2 - 1, -5);
 
-        EventManager.on(Events.UPDATE, () => this.update());
-        EventManager.on(Events.CREATE_TETRAMINO, (event: { cells: Point[], stuckCells: StuckCell[], color: string }) => {
+        MessageManager.on(Messages.UPDATE_TIME_ELAPSED, () => this.update());
+        MessageManager.on(Messages.INPUT_DETECTED, command => this.nextCommand.push(command));
+        MessageManager.on(Messages.ONE_STEP_DOWN_TIME_ELAPSED, () => this.goDownOneLevel());
+        MessageManager.on(Messages.GIVE_LIFE_TO_TETRAMINO, (event: { cells: Point[], stuckCells: StuckCell[], color: string }) => {
             this.color = event.color;
             this.nextCommand = [];
-            this.position = new Point(dimension.x / 2 - 1, -(event.cells.length + 1));
+            const centerPoint = new Point(dimension.x / 2 - 1, -(event.cells.length + 1));
+            this.position = centerPoint;
             this.cells = event.cells;
             this.stuckCells = event.stuckCells.map(cell => cell.block);
         });
-        EventManager.on(Events.INPUT_COMMAND, command => this.nextCommand.push(command));
-        EventManager.on(Events.GO_DOWN_ONE_LEVEL, () => this.goDownOneLevel());
-        EventManager.on(Events.GAME_OVER, () => this.sprites.forEach(sprite => sprite.destroy()));
+        MessageManager.on(Messages.GAME_OVER, () => this.sprites.forEach(sprite => sprite.destroy()));
     }
 
     private goDownOneLevel() {
@@ -44,9 +45,9 @@ export class FallingTetramino {
         } else {
             this.sprites.forEach(sprite => sprite.destroy());
             this.sprites = [];
-            EventManager.emit(Events.TETRAMINO_STACKED_UP, {
+            MessageManager.emit(Messages.FALLING_TETRAMINO_LANDED, {
                 color: this.color,
-                stuckCells: this.cells
+                cells: this.cells
                     .map(cell => new Point(this.position.x + cell.x, this.position.y + cell.y))
             });
         }

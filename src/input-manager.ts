@@ -1,8 +1,8 @@
 import {scale} from './scale';
 import {Command} from './command';
 import dimension from './level-dimension';
-import {Events} from './event-manager/events';
-import {EventManager} from './event-manager/event-manager';
+import {Messages} from './event-manager/messages';
+import {MessageManager} from './event-manager/message-manager';
 import KeyCodes = Phaser.Input.Keyboard.KeyCodes;
 import Point = Phaser.Geom.Point;
 import {gameScreenHeight, gameScreenWidth} from './game';
@@ -29,17 +29,17 @@ export class InputManager {
         this.scene = options.scene;
         this.keyboardInput = this.registerInputEvents();
         this.sprites.push(this.createSprite(new Point(0, gameScreenHeight / 2),
-            () => EventManager.emit(Events.INPUT_COMMAND, Command.Left)));
+            () => MessageManager.emit(Messages.INPUT_DETECTED, Command.Left)));
         this.sprites.push(this.createSprite(new Point(gameScreenWidth, gameScreenHeight / 2),
-            () => EventManager.emit(Events.INPUT_COMMAND, Command.Right)));
+            () => MessageManager.emit(Messages.INPUT_DETECTED, Command.Right)));
 
         this.sprites.push(this.createSprite(new Point(gameScreenWidth / 2, -gameScreenHeight / 4),
-            () => EventManager.emit(Events.INPUT_COMMAND, Command.Rotate)));
+            () => MessageManager.emit(Messages.INPUT_DETECTED, Command.Rotate)));
         this.sprites.push(this.createSprite(new Point(gameScreenWidth / 2, 5 * gameScreenHeight / 4),
-            () => EventManager.emit(Events.INPUT_COMMAND, Command.Down)));
+            () => MessageManager.emit(Messages.INPUT_DETECTED, Command.Down)));
 
-        EventManager.on(Events.UPDATE, delta => this.update(delta));
-        EventManager.on(Events.GAME_OVER, () => this.destroy());
+        MessageManager.on(Messages.UPDATE_TIME_ELAPSED, delta => this.update(delta));
+        MessageManager.on(Messages.GAME_OVER, () => this.destroy());
     }
 
     private update(delta: number) {
@@ -48,7 +48,7 @@ export class InputManager {
             if (input.millisecondsSinceLastActivation > input.commandResponse) {
                 if (input.keyCode.isDown) {
                     input.millisecondsSinceLastActivation = 0;
-                    EventManager.emit(Events.INPUT_COMMAND, input.command);
+                    MessageManager.emit(Messages.INPUT_DETECTED, input.command);
                 }
             }
         });

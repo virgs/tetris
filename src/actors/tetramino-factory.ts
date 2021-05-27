@@ -1,6 +1,6 @@
 import Point = Phaser.Geom.Point;
-import {EventManager} from '../event-manager/event-manager';
-import {Events} from '../event-manager/events';
+import {MessageManager} from '../event-manager/message-manager';
+import {Messages} from '../event-manager/messages';
 import {scale} from '../scale';
 import dimension from '../level-dimension';
 import {StuckCell} from './tetramino-stack';
@@ -25,18 +25,17 @@ export class TetraminoFactory {
         this.scene = options.scene;
         this.nextPiece = TetraminoFactory.randomlyCreateNextBlock();
         this.previewNextPiece();
-        EventManager.on(Events.RANDOMLY_GENERATE_NEXT_TETRAMINO, (options: { stuckCells: StuckCell[] }) => {
+        MessageManager.on(Messages.RANDOMLY_GENERATE_TETRAMINO, (options: { stuckCells: StuckCell[] }) => {
             const next = this.nextPiece;
             this.nextPiece = TetraminoFactory.randomlyCreateNextBlock();
             this.previewNextPiece();
 
-            EventManager.emit(Events.CREATE_TETRAMINO, {
+            MessageManager.emit(Messages.GIVE_LIFE_TO_TETRAMINO, {
                 cells: next.blocks,
                 color: next.color,
-                stuckCells: options.stuckCells
+                stuckCells: options ? options.stuckCells : []
             });
         });
-
     }
 
     private static randomlyCreateNextBlock(): { blocks: Phaser.Geom.Point[]; color: string } {

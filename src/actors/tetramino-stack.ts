@@ -1,7 +1,7 @@
 import {scale} from '../scale';
 import dimension from '../level-dimension';
-import {Events} from '../event-manager/events';
-import {EventManager} from '../event-manager/event-manager';
+import {Messages} from '../event-manager/messages';
+import {MessageManager} from '../event-manager/message-manager';
 import Point = Phaser.Geom.Point;
 
 export type StuckCell = { block: Point, color: string };
@@ -24,15 +24,15 @@ export class TetraminoStack {
     }
 
     private registerToEvents() {
-        EventManager.on(Events.TETRAMINO_STACKED_UP, (event: { stuckCells: Point[], color: string }) => {
-            this.stuckCells = this.stuckCells.concat(event.stuckCells
+        MessageManager.on(Messages.FALLING_TETRAMINO_LANDED, (event: { cells: Point[], color: string }) => {
+            this.stuckCells = this.stuckCells.concat(event.cells
                 .map(deadCell => ({block: deadCell, color: event.color})));
-            this.detectLineElimination();
+            const numberOfLinesEliminated = this.detectLineElimination();
+            if (numberOfLinesEliminated) {
+                MessageManager.emit(Messages.LINES_DELETED, {numberOfLinesEliminated});
+            }
+            MessageManager.emit(Messages.TETRAMINO_STACKED_UP, {stuckCells: this.stuckCells});
             this.renderSprites();
-        });
-
-        EventManager.on(Events.COLLECT_STACKED_BLOCKS, () => {
-            EventManager.emit(Events.RANDOMLY_GENERATE_NEXT_TETRAMINO, {stuckCells: this.stuckCells});
         });
     }
 
@@ -51,7 +51,7 @@ export class TetraminoStack {
             });
     }
 
-    private detectLineElimination() {
+    private detectLineElimination(): number {
         const linesToEliminate = this.linesWithMoreBlocksThanPossible();
         if (linesToEliminate.length > 0) {
             this.stuckCells = this.stuckCells
@@ -72,7 +72,7 @@ export class TetraminoStack {
         } else {
             this.scene.sound.add('stuck', {volume: 0.5}).play();
         }
-
+        return linesToEliminate.length;
     }
 
     private linesWithMoreBlocksThanPossible() {
