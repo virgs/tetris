@@ -6,7 +6,7 @@ import {EventManager} from '../event-manager/event-manager';
 import {TetraminoFactory} from '../actors/tetramino-factory';
 import {TetraminoStack} from '../actors/tetramino-stack';
 
-export class MainScene extends Phaser.Scene {
+export class ContainersManager extends Phaser.Scene {
 
     private gameRunning: boolean;
     private fastPaceEnabled: boolean = false;
@@ -21,14 +21,14 @@ export class MainScene extends Phaser.Scene {
     }
 
     public async create(): Promise<void> {
+        this.registerToEvents();
         this.initMembers();
         EventManager.emit(Events.GAME_BEGAN);
+        new TetraminoFactory({scene: this});
         new TetraminoStack({scene: this});
         new FallingTetramino({scene: this});
         new InputManager({scene: this});
-        new TetraminoFactory({scene: this});
-        EventManager.emit(Events.COLLECT_STACKED_BLOCKS);
-        this.registerToEvents();
+        EventManager.emit(Events.RANDOMLY_GENERATE_TETRAMINO);
     }
 
     private initMembers() {
@@ -44,14 +44,18 @@ export class MainScene extends Phaser.Scene {
             document.querySelector('body div#time-counter').textContent = (this.totalTime / 1000).toFixed(1);
             this.totalTime += delta;
             this.updateTimeCounterMs += delta;
-            if (this.updateTimeCounterMs > this.milliSecondsPerLevel || this.fastPaceEnabled) {
+            if (this.accumulatedTimeIsGreaterThanOneStepDownTime()) {
                 this.fastPaceEnabled = false;
                 this.updateTimeCounterMs %= this.milliSecondsPerLevel;
                 this.milliSecondsPerLevel = Math.max(this.milliSecondsPerLevel - delta / 1000, 100);
-                EventManager.emit(Events.GO_DOWN_ONE_LEVEL);
+                EventManager.emit(Events.ONE_STEP_DOWN_TIME_ELAPSED);
             }
-            EventManager.emit(Events.UPDATE, delta);
+            EventManager.emit(Events.UPDATE_TIME_ELAPSED, delta);
         }
+    }
+
+    private accumulatedTimeIsGreaterThanOneStepDownTime(): boolean {
+        return this.updateTimeCounterMs > this.milliSecondsPerLevel || this.fastPaceEnabled;
     }
 
     private registerToEvents() {
@@ -60,17 +64,19 @@ export class MainScene extends Phaser.Scene {
             this.gameRunning = false;
             setTimeout(() => this.scene.start('SplashScene'), 5000);
         });
-        EventManager.on(Events.INPUT_COMMAND, command => {
+        EventManager.on(Events.INPUT_DETECTED, command => {
             if (command === Command.Down) {
                 this.fastPaceEnabled = true;
             }
         });
         EventManager.on(Events.TETRAMINO_STACKED_UP, event => {
-            if (event.stuckCells.find(cell => cell.y < 0)) {
+            const isSomeCellOverTheRoof = event.stuckCells
+                .some(cell => cell.block.y < 0);
+            if (isSomeCellOverTheRoof) {
                 this.sound.add('game-over').play();
                 EventManager.emit(Events.GAME_OVER);
             } else {
-                EventManager.emit(Events.COLLECT_STACKED_BLOCKS);
+                EventManager.emit(Events.RANDOMLY_GENERATE_TETRAMINO, {stuckCells: event.stuckCells});
             }
         });
     }

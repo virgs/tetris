@@ -25,18 +25,17 @@ export class TetraminoFactory {
         this.scene = options.scene;
         this.nextPiece = TetraminoFactory.randomlyCreateNextBlock();
         this.previewNextPiece();
-        EventManager.on(Events.RANDOMLY_GENERATE_NEXT_TETRAMINO, (options: { stuckCells: StuckCell[] }) => {
+        EventManager.on(Events.RANDOMLY_GENERATE_TETRAMINO, (options: { stuckCells: StuckCell[] }) => {
             const next = this.nextPiece;
             this.nextPiece = TetraminoFactory.randomlyCreateNextBlock();
             this.previewNextPiece();
 
-            EventManager.emit(Events.CREATE_TETRAMINO, {
+            EventManager.emit(Events.GIVE_LIFE_TO_TETRAMINO, {
                 cells: next.blocks,
                 color: next.color,
-                stuckCells: options.stuckCells
+                stuckCells: options ? options.stuckCells : []
             });
         });
-
     }
 
     private static randomlyCreateNextBlock(): { blocks: Phaser.Geom.Point[]; color: string } {

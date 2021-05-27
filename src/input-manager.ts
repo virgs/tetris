@@ -29,16 +29,16 @@ export class InputManager {
         this.scene = options.scene;
         this.keyboardInput = this.registerInputEvents();
         this.sprites.push(this.createSprite(new Point(0, gameScreenHeight / 2),
-            () => EventManager.emit(Events.INPUT_COMMAND, Command.Left)));
+            () => EventManager.emit(Events.INPUT_DETECTED, Command.Left)));
         this.sprites.push(this.createSprite(new Point(gameScreenWidth, gameScreenHeight / 2),
-            () => EventManager.emit(Events.INPUT_COMMAND, Command.Right)));
+            () => EventManager.emit(Events.INPUT_DETECTED, Command.Right)));
 
         this.sprites.push(this.createSprite(new Point(gameScreenWidth / 2, -gameScreenHeight / 4),
-            () => EventManager.emit(Events.INPUT_COMMAND, Command.Rotate)));
+            () => EventManager.emit(Events.INPUT_DETECTED, Command.Rotate)));
         this.sprites.push(this.createSprite(new Point(gameScreenWidth / 2, 5 * gameScreenHeight / 4),
-            () => EventManager.emit(Events.INPUT_COMMAND, Command.Down)));
+            () => EventManager.emit(Events.INPUT_DETECTED, Command.Down)));
 
-        EventManager.on(Events.UPDATE, delta => this.update(delta));
+        EventManager.on(Events.UPDATE_TIME_ELAPSED, delta => this.update(delta));
         EventManager.on(Events.GAME_OVER, () => this.destroy());
     }
 
@@ -48,7 +48,7 @@ export class InputManager {
             if (input.millisecondsSinceLastActivation > input.commandResponse) {
                 if (input.keyCode.isDown) {
                     input.millisecondsSinceLastActivation = 0;
-                    EventManager.emit(Events.INPUT_COMMAND, input.command);
+                    EventManager.emit(Events.INPUT_DETECTED, input.command);
                 }
             }
         });
