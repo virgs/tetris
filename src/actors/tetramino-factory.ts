@@ -25,7 +25,7 @@ export class TetraminoFactory {
         this.scene = options.scene;
         this.nextPiece = TetraminoFactory.randomlyCreateNextBlock();
         this.previewNextPiece();
-        MessageManager.on(Messages.RANDOMLY_GENERATE_TETRAMINO, (options: { stuckCells: StuckCell[] }) => {
+        MessageManager.on(Messages.CREATE_TETRAMINO, (options: { stuckCells: StuckCell[] }) => {
             const next = this.nextPiece;
             this.nextPiece = TetraminoFactory.randomlyCreateNextBlock();
             this.previewNextPiece();

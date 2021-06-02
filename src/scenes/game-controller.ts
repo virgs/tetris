@@ -6,7 +6,7 @@ import {MessageManager} from '../message-manager/message-manager';
 import {TetraminoFactory} from '../actors/tetramino-factory';
 import {TetraminoStack} from '../actors/tetramino-stack';
 
-export class ContainersManager extends Phaser.Scene {
+export class GameController extends Phaser.Scene {
 
     private gameRunning: boolean;
     private fastPaceEnabled: boolean = false;
@@ -28,7 +28,7 @@ export class ContainersManager extends Phaser.Scene {
         new TetraminoStack({scene: this});
         new FallingTetramino({scene: this});
         new InputManager({scene: this});
-        MessageManager.emit(Messages.RANDOMLY_GENERATE_TETRAMINO);
+        MessageManager.emit(Messages.CREATE_TETRAMINO);
     }
 
     private initMembers() {
@@ -76,7 +76,7 @@ export class ContainersManager extends Phaser.Scene {
                 this.sound.add('game-over').play();
                 MessageManager.emit(Messages.GAME_OVER);
             } else {
-                MessageManager.emit(Messages.RANDOMLY_GENERATE_TETRAMINO, {stuckCells: event.stuckCells});
+                MessageManager.emit(Messages.CREATE_TETRAMINO, {stuckCells: event.stuckCells});
             }
         });
     }

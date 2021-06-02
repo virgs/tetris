@@ -3,7 +3,7 @@
 import 'phaser';
 import {scale} from './scale';
 import dimension from './level-dimension';
-import {ContainersManager} from './scenes/containers-manager';
+import {GameController} from './scenes/game-controller';
 import {SplashScene} from './scenes/splash-scene';
 
 export const [gameScreenWidth, gameScreenHeight] = [dimension.x * scale * 1.5, dimension.y * scale];
@@ -13,7 +13,7 @@ const config: GameConfig = {
     height: gameScreenHeight,
     type: Phaser.AUTO,
     parent: 'game',
-    scene: [SplashScene, ContainersManager],
+    scene: [SplashScene, GameController],
 };
 
 export class Game extends Phaser.Game {
