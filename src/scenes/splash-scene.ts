@@ -30,7 +30,7 @@ export class SplashScene extends Phaser.Scene {
 
         this.time.addEvent({
             delay: SplashScene.MIN_TIME,
-            callback: () => logo.on('pointerdown', () => {
+            callback: () => logo.once('pointerdown', () => {
                 if (this.loadCompleted) {
                     this.startMainScene();
                 } else {

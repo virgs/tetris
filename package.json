@@ -18,6 +18,7 @@
     "phaser": "^3.15.1"
   },
   "devDependencies": {
+    "eslint": "^8.0.1",
     "expose-loader": "^0.7.5",
     "ts-loader": "^5.4.5",
     "tslint": "^6.1.2",
