@@ -5,6 +5,7 @@ import {FallingTetramino} from '../actors/falling-tetramino';
 import {MessageManager} from '../message-manager/message-manager';
 import {TetraminoFactory} from '../actors/tetramino-factory';
 import {TetraminoStack} from '../actors/tetramino-stack';
+import {gameScreenHeight, gameScreenWidth} from '../game';
 
 export class GameController extends Phaser.Scene {
 
@@ -29,6 +30,13 @@ export class GameController extends Phaser.Scene {
         new FallingTetramino({scene: this});
         new InputManager({scene: this});
         MessageManager.emit(Messages.CREATE_TETRAMINO);
+        this.lights.enable().setAmbientColor(0xAAAAAA);
+        this.lights.addLight(gameScreenWidth * 0.25, gameScreenHeight * 1.25, gameScreenWidth * 2, 0xFFFFAA, 2);
+
+        // this.input.on('pointermove', function (pointer) {
+        //     light.x = pointer.x;
+        //     light.y = pointer.y;
+        // });
     }
 
     private initMembers() {

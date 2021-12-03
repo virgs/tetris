@@ -100,7 +100,7 @@ export class TetraminoFactory {
         this.nextPiece.blocks
             .forEach(cell => {
                 const sprite = this.scene.add.sprite((this.position.x + cell.x) * scale + (scale / 2),
-                    (this.position.y + cell.y) * scale + (scale / 2), 'wall.bmp');
+                    (this.position.y + cell.y) * scale + (scale / 2), 'wall');
                 sprite.setScale(scale / sprite.width);
                 sprite.setTint(this.nextPiece.color as any);
                 this.sprites.push(sprite);

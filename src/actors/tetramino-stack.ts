@@ -43,7 +43,8 @@ export class TetraminoStack {
         this.stuckCells
             .forEach(cell => {
                 const sprite = this.scene.add.sprite(cell.block.x * scale + (scale / 2),
-                    cell.block.y * scale + (scale / 2), 'wall.bmp');
+                    cell.block.y * scale + (scale / 2), 'wall');
+                sprite.setPipeline('Light2D');
                 sprite.setScale(scale / sprite.width);
                 sprite.setAlpha(0.95);
                 sprite.setTint(cell.color as any);

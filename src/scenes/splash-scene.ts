@@ -47,12 +47,10 @@ export class SplashScene extends Phaser.Scene {
     }
 
     private loadImages() {
-        const imagesToLoad = [
-            'empty-background.png',
-            'wall.bmp'
-        ];
-
-        imagesToLoad.forEach(image => this.load.image(image, `./assets/images/${image}`));
+        this.load.image('empty-background.png', `./assets/images/empty-background.png`);
+        //https://cpetry.github.io/NormalMap-Online/
+        // https://www.smart-page.net/smartnormal/
+        this.load.image('wall', [`./assets/images/wall.bmp`, './assets/images/wall_n.png']);
     }
 
     private loadSounds() {
