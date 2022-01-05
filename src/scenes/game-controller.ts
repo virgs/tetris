@@ -32,11 +32,6 @@ export class GameController extends Phaser.Scene {
         MessageManager.emit(Messages.CREATE_TETRAMINO);
         this.lights.enable().setAmbientColor(0xAAAAAA);
         this.lights.addLight(gameScreenWidth * 0.25, gameScreenHeight * 1.25, gameScreenWidth * 2, 0xFFFFAA, 2);
-
-        // this.input.on('pointermove', function (pointer) {
-        //     light.x = pointer.x;
-        //     light.y = pointer.y;
-        // });
     }
 
     private initMembers() {

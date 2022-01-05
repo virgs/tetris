@@ -27,14 +27,14 @@ export class InputManager {
     constructor(options: { scene: Phaser.Scene }) {
         this.scene = options.scene;
         this.keyboardInput = this.registerInputEvents();
-        this.sprites.push(this.createSprite(new Point(0, gameScreenHeight / 2),
+        this.sprites.push(this.createSprite(new Point(2 * scale, gameScreenHeight / 2),
             () => MessageManager.emit(Messages.INPUT_DETECTED, Command.Left)));
-        this.sprites.push(this.createSprite(new Point(gameScreenWidth, gameScreenHeight / 2),
+        this.sprites.push(this.createSprite(new Point(gameScreenWidth - 2 * scale, gameScreenHeight / 2),
             () => MessageManager.emit(Messages.INPUT_DETECTED, Command.Right)));
 
-        this.sprites.push(this.createSprite(new Point(gameScreenWidth / 2, -gameScreenHeight / 4),
+        this.sprites.push(this.createSprite(new Point(gameScreenWidth / 2, 2 * scale),
             () => MessageManager.emit(Messages.INPUT_DETECTED, Command.Rotate)));
-        this.sprites.push(this.createSprite(new Point(gameScreenWidth / 2, 5 * gameScreenHeight / 4),
+        this.sprites.push(this.createSprite(new Point(gameScreenWidth / 2, gameScreenHeight - 2 * scale),
             () => MessageManager.emit(Messages.INPUT_DETECTED, Command.Down)));
 
         MessageManager.on(Messages.UPDATE_TIME_ELAPSED, delta => this.update(delta));
@@ -80,12 +80,12 @@ export class InputManager {
     }
 
     private createSprite(point: Phaser.Geom.Point, callback: Function): Phaser.GameObjects.Sprite {
-        const sprite = this.scene.add.sprite(point.x * scale, point.y * scale,
-            'hole.bmp');
-        sprite.setInteractive();
+        const sprite = this.scene.add.sprite(point.x, point.y, 'hole');
         sprite.on('pointerdown', callback);
-        sprite.setAlpha(0.01);
-        sprite.setScale(gameScreenWidth / sprite.width, .75 * gameScreenHeight / sprite.height);
+        sprite.setTint('0xe2d2e0' as any);
+        sprite.setInteractive();
+        sprite.setAlpha(.25);
+        sprite.setScale(15);
         return sprite;
     }
 }

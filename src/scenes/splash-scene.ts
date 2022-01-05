@@ -51,6 +51,7 @@ export class SplashScene extends Phaser.Scene {
         //https://cpetry.github.io/NormalMap-Online/
         // https://www.smart-page.net/smartnormal/
         this.load.image('wall', [`./assets/images/wall.bmp`, './assets/images/wall_n.png']);
+        this.load.image('hole', `./assets/images/hole.bmp`);
     }
 
     private loadSounds() {
